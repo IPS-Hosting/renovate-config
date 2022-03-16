@@ -6,7 +6,7 @@
 		":combinePatchMinorReleases",
         ":semanticPrefixFixDepsChoreOthers",
         ":prImmediately",
-        ":prHourlyLimitNote",
+        ":prHourlyLimitNone",
         ":prConcurrentLimit20",
         ":maintainLockFilesWeekly",
         ":ignoreUnstable",
