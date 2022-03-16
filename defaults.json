@@ -1,0 +1,29 @@
+{
+	"extends": [
+		":ignoreModulesAndTests",
+        ":pinAllExceptPeerDependencies",
+		":separateMultipleMajorReleases",
+		":combinePatchMinorReleases",
+        ":semanticPrefixFixDepsChoreOthers",
+        ":prImmediately",
+        ":prHourlyLimitNote",
+        ":prConcurrentLimit20",
+        ":maintainLockFilesWeekly",
+        ":ignoreUnstable",
+        ":updateNotScheduled",
+        ":automergeLinters",
+        ":automergeTypes",
+        ":automergeTesters",
+        ":npm",
+        ":gomod",
+        ":docker",
+        "group:monorepos",
+		"group:recommended",
+        "group:allNonMajor",
+		":label(dependencies)",
+		":enableVulnerabilityAlertsWithLabel(security)",
+        ":semanticCommits",
+        ":dependencyDashboard",
+        "workarounds:all"
+	]
+}
