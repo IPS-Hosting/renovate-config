@@ -1,10 +1,9 @@
 {
 	"extends": [
-		":ignoreModulesAndTests",
+		"config:best-practices",
 		":pinAllExceptPeerDependencies",
 		":separateMultipleMajorReleases",
 		":combinePatchMinorReleases",
-		":semanticPrefixFixDepsChoreOthers",
 		":prImmediately",
 		":prHourlyLimitNone",
 		":prConcurrentLimit20",
@@ -17,13 +16,9 @@
 		":npm",
 		":gomod",
 		":docker",
-		"group:monorepos",
-		"group:recommended",
 		"group:allNonMajor",
 		":label(dependencies)",
 		":enableVulnerabilityAlertsWithLabel(security)",
 		":semanticCommits",
-		":dependencyDashboard",
-		"workarounds:all"
 	]
 }
