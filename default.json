@@ -16,7 +16,6 @@
 		":npm",
 		":gomod",
 		":docker",
-		"group:allNonMajor",
 		":label(dependencies)",
 		":enableVulnerabilityAlertsWithLabel(security)",
 		":semanticCommits"
