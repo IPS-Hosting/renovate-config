@@ -10,6 +10,7 @@
 		":maintainLockFilesWeekly",
 		":ignoreUnstable",
 		":updateNotScheduled",
+		":automergeRequireAllStatusChecks",
 		":automergeLinters",
 		":automergeTypes",
 		":automergeTesters",
