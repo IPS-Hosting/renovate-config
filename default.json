@@ -19,6 +19,6 @@
 		"group:allNonMajor",
 		":label(dependencies)",
 		":enableVulnerabilityAlertsWithLabel(security)",
-		":semanticCommits",
+		":semanticCommits"
 	]
 }
