@@ -10,15 +10,18 @@
 		":maintainLockFilesWeekly",
 		":ignoreUnstable",
 		":updateNotScheduled",
-		":automergeRequireAllStatusChecks",
-		":automergeLinters",
-		":automergeTypes",
-		":automergeTesters",
 		":npm",
 		":gomod",
 		":docker",
 		":label(dependencies)",
 		":enableVulnerabilityAlertsWithLabel(security)",
-		":semanticCommits"
+		":semanticCommits",
+		":automergePr",
+		":automergeRequireAllStatusChecks",
+		":automergeDigest",
+		":automergeLinters",
+		":automergeTesters",
+		":automergeTypes",
+		":automergeStableNonMajor"
 	]
 }
