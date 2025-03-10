@@ -7,7 +7,6 @@
 		":prImmediately",
 		":prHourlyLimitNone",
 		":prConcurrentLimit20",
-		":maintainLockFilesWeekly",
 		":ignoreUnstable",
 		":updateNotScheduled",
 		":npm",
@@ -23,5 +22,10 @@
 		":automergeTesters",
 		":automergeTypes",
 		":automergeStableNonMajor"
-	]
+	],
+	"lockFileMaintenance": {
+		"enabled": true,
+		"automerge": true,
+		"extends": ["schedule:weekly"]
+	}
 }
