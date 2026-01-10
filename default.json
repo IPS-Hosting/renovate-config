@@ -27,5 +27,22 @@
 		"enabled": true,
 		"automerge": true,
 		"extends": ["schedule:weekly"]
-	}
+	},
+	// This custom manager allows to update arbitrary yaml values. Renovate documentation: https://docs.renovatebot.com/modules/manager/regex/#optional-capture-groups
+	// It requires a # renovate: annotation. The registryUrl and versioning parts are optional.
+	// Usage in any yaml file:
+	// # renovate: datasource=docker depName=org/repo registryUrl=https://registry.example.com versioning=loose
+	// my_version: 1.2.3
+	"customManagers": [
+		{
+			"customType": "regex",
+			"managerFilePatterns": [
+				"/\\.ya?ml$/"
+			],
+			"matchStrings": [
+				"# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( registryUrl=(?<registryUrl>\\S+))?( versioning=(?<versioning>\\S+))?\\s+\\S+:\\s*(?<currentValue>\\S+)"
+			],
+			"versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+		}
+	]
 }
