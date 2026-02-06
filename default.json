@@ -40,7 +40,7 @@
 				"/\\.ya?ml$/"
 			],
 			"matchStrings": [
-				"# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( registryUrl=(?<registryUrl>\\S+))?( versioning=(?<versioning>\\S+))?\\s+\\S+:\\s*(?<currentValue>\\S+)"
+				"# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( registryUrl=(?<registryUrl>\\S+))?( versioning=(?<versioning>\\S+))?\\s+\\S+:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
 			],
 			"versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
 		}
