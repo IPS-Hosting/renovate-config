@@ -23,6 +23,28 @@
 		":automergeTypes",
 		":automergeStableNonMajor"
 	],
+	// Use the platform's native auto-merge (GitHub) instead of Renovate merging itself.
+	// Explicit even though it is the modern default, so the intent survives preset changes.
+	"platformAutomerge": true,
+	// Group all non-major updates (incl. docker digest bumps and lock file maintenance)
+	// into a single branch per repository. Without this, every pending update PR is
+	// rebased and re-tested by CI after each merge to the base branch - with ~14 open
+	// update PRs that multiplies runner minutes by the number of pending updates.
+	// Major updates stay separate (see :separateMultipleMajorReleases).
+	"packageRules": [
+		{
+			"description": "Group non-major updates into one PR to reduce CI churn",
+			"matchUpdateTypes": [
+				"minor",
+				"patch",
+				"digest",
+				"pinDigest",
+				"lockFileMaintenance"
+			],
+			"groupName": "non-major dependency updates",
+			"groupSlug": "non-major-updates"
+		}
+	],
 	"lockFileMaintenance": {
 		"enabled": true,
 		"automerge": true,
