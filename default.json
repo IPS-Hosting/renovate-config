@@ -48,6 +48,10 @@
 	// Wait for at least 3 days before suggesting a dependency update.
 	// Increases the chance that supply chain attacks are already detected and yanked.
 	"minimumReleaseAge": "3 days",
+	// Only rebase pull requests when they conflict with the base branch.
+	// With automerge enabled, Renovate would otherwise rebase every open pull request after each merge to the base
+	// branch, and every rebase triggers a full CI run.
+	"rebaseWhen": "conflicted",
 	// This custom manager allows to update arbitrary yaml values. Renovate documentation: https://docs.renovatebot.com/modules/manager/regex/#optional-capture-groups
 	// It requires a # renovate: annotation. The registryUrl and versioning parts are optional.
 	// Usage in any yaml file:
