@@ -40,6 +40,9 @@ Non-major updates are grouped per ecosystem:
 
 All updates wait for a minimum release age of 3 days.
 
+Pull requests are only rebased when they conflict with the base branch (`rebaseWhen: conflicted`), so that a merge to
+the base branch does not trigger a CI run for every open pull request.
+
 Automerge is enabled for stable non-major updates, digests, lock file maintenance and linters, testers and types,
 as long as all status checks pass. A group is merged automatically only if every update in it may be automerged.
 
