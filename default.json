@@ -2,8 +2,9 @@
 	"extends": [
 		"config:best-practices",
 		":pinAllExceptPeerDependencies",
-		":separateMultipleMajorReleases",
+		// Minor and patch updates of one dependency share a pull request.
 		":combinePatchMinorReleases",
+		// Create pull requests as soon as a branch is created; the schedule below decides when that is.
 		":prImmediately",
 		":prHourlyLimitNone",
 		":prConcurrentLimit20",
@@ -23,11 +24,30 @@
 		":automergeTypes",
 		":automergeStableNonMajor"
 	],
+	// Update policy (details in README.md):
+	// - Everything arrives once a week, on Monday morning (Europe/Berlin).
+	// - Minor, patch, digest and pin updates are grouped per ecosystem: one pull request each for npm, Go, Python,
+	//   GitHub Actions, Ansible, Nix and for container images and Helm charts together.
+	// - Major updates stay separate pull requests, one per dependency, and only for the newest major version
+	//   (Renovate's default for separateMultipleMajor).
+	// - Security fixes ignore all of this: Renovate's vulnerabilityAlerts defaults open them immediately, as a
+	//   separate pull request, without the minimum release age. Their package rules are appended after all
+	//   other rules, so no group or schedule below (or in a repository) applies to them.
+	// - Automerge stays as before. A group is merged automatically only if every update in it may be automerged.
+	"timezone": "Europe/Berlin",
+	"schedule": ["* 0-5 * * 1"],
+	// Run weekly lock file maintenance in the same window.
+	// See https://docs.renovatebot.com/configuration-options/#lockfilemaintenance.
 	"lockFileMaintenance": {
 		"enabled": true,
 		"automerge": true,
-		"extends": ["schedule:weekly"]
+		"schedule": ["* 0-5 * * 1"]
 	},
+	// Use vulnerability alerts from osv.dev in addition to GitHub's.
+	"osvVulnerabilityAlerts": true,
+	// Wait for at least 3 days before suggesting a dependency update.
+	// Increases the chance that supply chain attacks are already detected and yanked.
+	"minimumReleaseAge": "3 days",
 	// This custom manager allows to update arbitrary yaml values. Renovate documentation: https://docs.renovatebot.com/modules/manager/regex/#optional-capture-groups
 	// It requires a # renovate: annotation. The registryUrl and versioning parts are optional.
 	// Usage in any yaml file:
@@ -36,13 +56,81 @@
 	"customManagers": [
 		{
 			"customType": "regex",
-			"managerFilePatterns": [
-				"/\\.ya?ml$/"
-			],
+			"managerFilePatterns": ["/\\.ya?ml$/"],
 			"matchStrings": [
 				"# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( registryUrl=(?<registryUrl>\\S+))?( versioning=(?<versioning>\\S+))?\\s+\\S+:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
 			],
 			"versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+		}
+	],
+	// Package rules apply in order; a later rule overrides an earlier one. Repository rules come after all of these.
+	"packageRules": [
+		{
+			"matchManagers": ["gomod"],
+			"postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"]
+		},
+		// Weekly ecosystem groups for minor, patch, digest and pin updates. The catch-all comes first, so the more
+		// specific groups below take precedence; it collects what no ecosystem group covers (for example versions
+		// tracked by the custom regex managers from GitHub releases).
+		{
+			"description": "Non-major updates that no ecosystem group below covers",
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "other dependencies (non-major)"
+		},
+		{
+			"description": "npm and other JavaScript dependencies, including the Node.js and pnpm versions",
+			"matchCategories": ["js"],
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "npm dependencies (non-major)"
+		},
+		{
+			"description": "npm packages tracked by custom managers",
+			"matchDatasources": ["npm"],
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "npm dependencies (non-major)"
+		},
+		{
+			"description": "Go modules and the Go toolchain",
+			"matchCategories": ["golang"],
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "Go modules (non-major)"
+		},
+		{
+			"description": "Python packages and the Python version",
+			"matchCategories": ["python"],
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "Python dependencies (non-major)"
+		},
+		{
+			"description": "Python packages tracked by custom managers",
+			"matchDatasources": ["pypi"],
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "Python dependencies (non-major)"
+		},
+		{
+			"description": "Ansible collections and roles",
+			"matchCategories": ["ansible"],
+			"matchDatasources": ["galaxy", "galaxy-collection"],
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "Ansible (non-major)"
+		},
+		{
+			"description": "Nix flake inputs",
+			"matchManagers": ["nix"],
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "Nix (non-major)"
+		},
+		{
+			"description": "GitHub Actions, including their digest pins (container images in workflows go to the container group below)",
+			"matchManagers": ["github-actions"],
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "GitHub Actions (non-major)"
+		},
+		{
+			"description": "Container images and Helm charts from every manager (Dockerfiles, Compose, Kubernetes manifests, Helm values, Chart.yaml, Argo CD, Ansible, Actions container jobs, custom managers); OCI Helm charts use the Docker datasource",
+			"matchDatasources": ["docker", "helm"],
+			"matchUpdateTypes": ["minor", "patch", "digest", "pin", "pinDigest"],
+			"groupName": "container images and Helm charts (non-major)"
 		}
 	]
 }
